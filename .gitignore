@@ -1,0 +1,11 @@
+# Backend
+*.pyc
+__pycache__/
+venv/
+*.sqlite3
+media/
+
+# Frontend
+node_modules/
+build/
+.env
