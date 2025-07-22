@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <body style="margin:0;padding:0;background:#f0f9ff;font-family:'Segoe UI',Arial,sans-serif;">
+    <div style="max-width:520px;margin:40px auto;background:#fff;border-radius:18px;box-shadow:0 6px 32px #1abc9c22,0 1.5px 8px #185a9d11;padding:40px 32px 32px 32px;">
+      <div style="text-align:center;">
+        <h2 style="color:#185a9d;font-weight:800;margin-bottom:10px;">
+          📩 New Contact Message
+        </h2>
+      </div>
+      <div style="margin:0 0 18px 0;">
+        <p style="font-size:1.08rem;color:#185a9d;margin-bottom:10px;">
+          <b>{{ user_name }}</b> (<a href="mailto:{{ user_email }}" style="color:#1abc9c;">{{ user_email }}</a>) sent a message via the contact form.
+        </p>
+        <div style="background:linear-gradient(90deg,#e0f7fa 60%,#f0f9ff 100%);border-radius:10px;padding:16px 18px;margin:18px 0;">
+          <b style="color:#1abc9c;">Message:</b>
+          <div style="color:#185a9d;font-size:1.02rem;margin-top:8px;">
+            {{ user_message|linebreaksbr }}
+          </div>
+        </div>
+        <p style="margin-top:24px;font-size:1.05rem;color:#444;">
+          Please respond promptly if required.<br>
+          <span style="color:#1abc9c;font-weight:600;">CashNova Admin Notification</span>
+        </p>
+      </div>
+    </div>
+  </body>
+</html>
