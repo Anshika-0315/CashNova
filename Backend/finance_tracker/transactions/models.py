@@ -173,8 +173,10 @@ class GoalTransaction(models.Model):
     def save(self, *args, **kwargs):
         if not self.pk:
             self.goal.saved_amount += self.amount
-            if self.goal.saved_amount >= self.goal.target_amount:
+            if self.goal.saved_amount >= self.goal.target_amount and not self.goal.is_completed:
                 self.goal.is_completed = True
+                if not self.goal.completed_on:
+                    self.goal.completed_on = datetime.now().date()
             self.goal.save()
         super().save(*args, **kwargs)
 
