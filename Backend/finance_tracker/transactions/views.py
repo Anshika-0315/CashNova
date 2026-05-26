@@ -279,13 +279,13 @@ class GoalViewSet(viewsets.ModelViewSet):
         saved = GoalTransaction.objects.filter(goal=goal, user=goal.user).aggregate(total=Sum('amount'))['total'] or 0
         goal.saved_amount = saved
         if goal.saved_amount >= goal.target_amount:
-            goal.status = "COMPLETED"
+            goal.is_completed = True
             if not goal.completed_on:
                 goal.completed_on = today  # <-- Set completed_on date
         elif today > goal.target_date and goal.saved_amount < goal.target_amount:
-            goal.status = "MISSED"
+            goal.is_completed = False
         else:
-            goal.status = "ONGOING"
+            goal.is_completed = False
         goal.save()
 
     @action(detail=False, methods=["get"])
@@ -299,9 +299,12 @@ class GoalViewSet(viewsets.ModelViewSet):
             # Update the status first
             self.update_goal_status(goal)
 
-            if goal.status == "COMPLETED" and not goal.goal_completed_seen:
+            is_completed = goal.is_completed
+            is_missed = not goal.is_completed and today > goal.target_date
+
+            if is_completed and not goal.goal_completed_seen:
                 completed.append(goal.name)
-            elif goal.status == "MISSED" and not goal.goal_missed_seen:
+            elif is_missed and not goal.goal_missed_seen:
                 missed.append(goal.name)
 
         return Response({
@@ -362,15 +365,18 @@ class GoalViewSet(viewsets.ModelViewSet):
 def mark_goal_seen(request, pk):
     try:
         goal = Goal.objects.get(id=pk, user=request.user)
-        if goal.status == 'COMPLETED':
+        today = timezone.now().date()
+        is_completed = goal.is_completed
+        is_missed = not goal.is_completed and today > goal.target_date
+        
+        if is_completed:
             goal.goal_completed_seen = True
-        elif goal.status == 'MISSED':
+        elif is_missed:
             goal.goal_missed_seen = True
         goal.save()
         return Response({'success': True})
     except Goal.DoesNotExist:
         return Response({'error': 'Goal not found'}, status=404)
-
 
 
 
